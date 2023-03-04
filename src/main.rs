@@ -1,8 +1,17 @@
-//import file system library
-use std::fs;
-//function to read file info.txt
-fn main() {
-    let file_contents = fs::read_to_string("info.txt")
-        .expect("Should have been able to read the file");
-    println!("info.txt context are {file_contents}");
+// Rust
+use std::fs::File;
+use std::io::{BufReader, BufRead};
+
+fn main() -> std::io::Result<()> {
+    let file = File::open("info.txt")?;
+    let reader = BufReader::new(file);
+
+    for line in reader.lines() {
+        let line = line?;
+        
+        println!("1");
+        println!("{}", line);
+    }
+
+    Ok(())
 }
