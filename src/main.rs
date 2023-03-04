@@ -18,6 +18,8 @@
 //     .expect("LogRocket: error writing to file");
 // }
 use serde::{Deserialize, Serialize};
+use std::fs;
+use std::io;
 #[derive(Deserialize, Serialize, Debug)]
 struct SalesAndProducts {
     products: Vec<Product>,
@@ -37,4 +39,13 @@ struct Sale {
     quantity: f32,
     unit: String
 }
-fn main() {}
+fn main() -> Result<(), io::Error> {
+    let mut sales_and_products: SalesAndProducts = {
+        let data = fs::read_to_string("./data/sales.json").expect("LogRocket: error reading file");
+        serde_json::from_str(&data).unwrap()
+    };
+    sales_and_products.sales[1].quantity += 1.5;
+    fs::write("./data/sales.json", serde_json::to_string_pretty(&sales_and_products).unwrap())?;
+
+    Ok(())
+}
